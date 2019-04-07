@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">LoRa - Data Sensor App</string>
+    <string name="app_import">Node Mapping</string>
+    <string name="app_gallery">Data Sensor</string>
+    <string name="app_slideshow">About</string>
+    <string name="app_tools">Settings</string>
+    <string name="app_communicate">Others</string>
+    <string name="app_share"></string>
+    <string name="app_send"></string>
+    <string name="appmenuname">LoRa Data Show</string>
+
+    <string name="navdemo">Navigation Drawer Full Demo</string>
+    <string name="gallery">This is GALLERY Activity</string>
+    <string name="fileimport">This is FILE IMPORT Activity</string>
+    <string name="slideshow">This is SLIDE SHOW Activity</string>
+
+    <string name="action_settings">settings</string>
+
+    <string name="navigation_drawer_open">Open Navigation Drawer</string>
+    <string name="navigation_drawer_close">Close Navigation Drawer</string>
+</resources>

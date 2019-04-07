@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background">
+
+    <TextView
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Version - 0.0.1\n\nThis app is used for watching data of sensor node.\nUsing LoRa protocol to transferdata."
+        android:padding="20dp"
+        android:textSize="20sp"
+        android:fontFamily="serif"
+        android:textColor="#FFFFFF"
+        android:layout_marginTop="100dp"/>
+
+    <Button
+        android:id="@+id/btnInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#11FFFFFF"
+        android:fontFamily="cursive"
+        android:textSize="25dp"
+        android:text="Contact with us"
+        android:textColor="@color/colorWhite" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="135dp"
+        android:layout_height="123dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="110dp"
+        app:srcCompat="@mipmap/logo" />
+
+</RelativeLayout>
