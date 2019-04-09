@@ -3,6 +3,9 @@ package com.delaroystudios.navigationdrawer;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -10,8 +13,22 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by delaroy on 3/18/17.
@@ -24,28 +41,51 @@ public class FileImport extends AppCompatActivity implements NavigationView.OnNa
     int themeColor;
     int appColor;
 
+    boolean isRunning = false;
+    Handler mHandler = new Handler();
+
+    private TextView mTextViewResult;
+
+
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fileimport);
         //Node Mapping Activity
         init();
 
+        mTextViewResult = (TextView) findViewById(R.id.node);
+
 
     }
 
-    private void init(){
+    private Runnable loopR = new Runnable() {
+        public void run() {
+            try {
+                isRunning = true;
+                jsonParse();
+                Log.d("Times","0");
+                mHandler.postDelayed(loopR, 30000);
+            } catch (Exception e) {
+                e.printStackTrace();
+                isRunning = false;
+            }
+        }
+    };
+
+
+    private void init() {
         app_preferences = PreferenceManager.getDefaultSharedPreferences(this);
         appColor = app_preferences.getInt("color", 0);
         appTheme = app_preferences.getInt("theme", 0);
         themeColor = appColor;
         constant.color = appColor;
 
-        if (themeColor == 0){
+        if (themeColor == 0) {
             setTheme(Constant.theme);
-        }else if (appTheme == 0){
+        } else if (appTheme == 0) {
             setTheme(Constant.theme);
-        }else{
+        } else {
             setTheme(appTheme);
         }
 
@@ -64,47 +104,68 @@ public class FileImport extends AppCompatActivity implements NavigationView.OnNa
     }
 
     @Override
-    public void onBackPressed(){
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if(drawer.isDrawerOpen(GravityCompat.START)){
-            drawer.closeDrawer(GravityCompat.START);
-        }else{
-            super.onBackPressed();
+    protected void onStart() {
+        if (isRunning == false){
+            loopR.run();
         }
+        super.onStart();
+    }
+
+
+    @Override
+    protected void onStop() {
+        mHandler.removeCallbacks(loopR);
+        mHandler.removeCallbacksAndMessages(null);
+        isRunning = false;
+        super.onStop();
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu){
+    public void onBackPressed() {
+
+        //onStop();
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.nav_drawer, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if(id == R.id.action_settings){
+        if (id == R.id.action_settings) {
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public boolean onNavigationItemSelected(MenuItem item){
+    public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if(id == R.id.gallery){
+        if (id == R.id.gallery) {
             Intent searchIntent = new Intent(FileImport.this, Gallery.class);
             startActivity(searchIntent);
             overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
-        }else if(id == R.id.fileimport){
+        } else if (id == R.id.fileimport) {
             Intent searchIntent = new Intent(FileImport.this, FileImport.class);
             startActivity(searchIntent);
             overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
-        }else if(id == R.id.slideshow){
+        } else if (id == R.id.slideshow) {
             Intent searchIntent = new Intent(FileImport.this, SlideShow.class);
             startActivity(searchIntent);
             overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
-        }else if(id == R.id.settings) {
+        } else if (id == R.id.settings) {
             Intent searchIntent = new Intent(FileImport.this, SettingsActivity.class);
             startActivity(searchIntent);
             overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
@@ -113,4 +174,46 @@ public class FileImport extends AppCompatActivity implements NavigationView.OnNa
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    private void jsonParse() {
+
+        String url = "http://192.168.97.1/rpi3/backend/getmap.php";
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        final StringBuilder s = new StringBuilder();
+
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONArray jsonarray = new JSONArray(response);
+
+                            for (int i = 0; i < jsonarray.length(); i++) {
+
+                                JSONObject jsonobj = jsonarray.getJSONObject(i);
+
+                                s.append("ip : " + i + " = " + jsonobj.getString("ip") + "\n");
+                            }
+
+
+                            mTextViewResult.setText(s.toString());
+                            Log.d("Str",s.toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mTextViewResult.setText("That didn't work!");
+            }
+        });
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
+
+    }
+
 }

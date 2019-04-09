@@ -25,4 +25,5 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:26.+'
     implementation 'com.android.support:design:26.+'
     implementation 'com.turki-alkhateeb:materialcolorpicker:1.0.7'
+    implementation 'com.android.volley:volley:1.1.1'
 }

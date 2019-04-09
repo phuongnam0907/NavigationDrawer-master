@@ -7,11 +7,16 @@ import android.content.SharedPreferences;
 import android.graphics.Paint;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +24,8 @@ import android.widget.Toast;
 
 import com.turkialkhateeb.materialcolorpicker.ColorChooserDialog;
 import com.turkialkhateeb.materialcolorpicker.ColorListener;
+
+import java.util.List;
 
 /**
  * Created by delaroy on 3/21/17.
@@ -49,7 +56,16 @@ public class SettingsActivity extends AppCompatActivity {
         wifiBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(),"Please connect to \"localhost2067\" wifi!!!",Toast.LENGTH_SHORT).show();
+                WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+                String ssid = wifiInfo.getSSID();
+                Log.d("SSID", ssid);
+                if (ssid.equals("\"localhost2067\"")) Toast.makeText(getApplicationContext(),"Connected Station wifi!!!",Toast.LENGTH_SHORT).show();
+                else {
+                    Toast.makeText(getApplicationContext(),"Pleasess connect to \"localhost2067\" wifi!!!",Toast.LENGTH_SHORT).show();
+                    connectWifi();
+                }
+
             }
         });
 
@@ -139,5 +155,31 @@ public class SettingsActivity extends AppCompatActivity {
         d.getPaint().setColor(Constant.color);
 
         button.setBackground(d);
+    }
+
+    private void connectWifi(){
+        WifiManager wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
+        List<ScanResult> wifiScanList = wifi.getScanResults();
+        String[] wifis = new String[wifiScanList.size()];
+
+        for(int i = 0; i < wifiScanList.size(); i++){
+            wifis[i] = ((wifiScanList.get(i)).SSID);
+
+            if(wifis[i].equals("localhost2067")) {
+
+                WifiConfiguration wifiConfig = new WifiConfiguration();
+                wifiConfig.SSID = String.format("\"%s\"", wifis[i]);
+                wifiConfig.preSharedKey = String.format("\"%s\"", "11223344");
+
+                WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                //remember id
+                int netId = wifiManager.addNetwork(wifiConfig);
+                wifiManager.disconnect();
+                wifiManager.enableNetwork(netId, true);
+                wifiManager.reconnect();
+                Toast.makeText(getApplicationContext(),"Connected Station wifi!!!",Toast.LENGTH_SHORT).show();
+            } else Toast.makeText(getApplicationContext(),"Cannot connect station wifi",Toast.LENGTH_SHORT).show();
+        }
     }
 }
