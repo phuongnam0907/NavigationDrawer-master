@@ -1,8 +1,10 @@
 package com.delaroystudios.navigationdrawer;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,16 +14,39 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by delaroy on 3/18/17.
  */
-public class Gallery extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class Gallery extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     Methods methods;
     Constant constant;
     SharedPreferences.Editor editor;
@@ -29,6 +54,8 @@ public class Gallery extends AppCompatActivity implements NavigationView.OnNavig
     int deftheme;
     int themeColor;
     int color;
+
+    final static String url = "http://192.168.97.1/rpi3/backend/getgw.php";
 
     private ViewPager mSlideViewPager;
     private LinearLayout mDotLayout;
@@ -39,12 +66,32 @@ public class Gallery extends AppCompatActivity implements NavigationView.OnNavig
 
     private int mCurrentPage;
 
+    Spinner spinner;
+    private ArrayList<String> stringArray;
+    TextView ipaddr;
+
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
         //Data show Chart Activity
         init();
+
+        stringArray = new ArrayList<String>();
+        spinner = findViewById(R.id.spinnerL);
+        ipaddr = findViewById(R.id.ip_add);
+        loadSpinnerData(url);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String country = spinner.getItemAtPosition(spinner.getSelectedItemPosition()).toString();
+                Toast.makeText(getApplicationContext(),country,Toast.LENGTH_LONG).show();
+                ipaddr.setText(country);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) { }
+        });
 
         mSlideViewPager = (ViewPager) findViewById(R.id.slideViewPager);
         mDotLayout = (LinearLayout) findViewById(R.id.dotsLayout);
@@ -58,6 +105,32 @@ public class Gallery extends AppCompatActivity implements NavigationView.OnNavig
 
         mSlideViewPager.addOnPageChangeListener(viewListener);
 
+    }
+
+    private void loadSpinnerData(String url) {
+        RequestQueue requestQueue=Volley.newRequestQueue(getApplicationContext());
+        StringRequest stringRequest=new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try{
+                    JSONArray jsonArray=new JSONArray(response);
+                    for(int i=0;i<jsonArray.length();i++){
+                        JSONObject jsonObject1=jsonArray.getJSONObject(i);
+                        stringArray.add("Gateway " + jsonObject1.getString("Gateway") + " - Node " + jsonObject1.getString("Node"));
+                    }
+                    spinner.setAdapter(new ArrayAdapter<String>(Gallery.this, android.R.layout.simple_spinner_dropdown_item, stringArray));
+                }catch (JSONException e){e.printStackTrace();}
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+        int socketTimeout = 30000;
+        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        stringRequest.setRetryPolicy(policy);
+        requestQueue.add(stringRequest);
     }
 
     private void init(){
@@ -178,4 +251,5 @@ public class Gallery extends AppCompatActivity implements NavigationView.OnNavig
 
         }
     };
+
 }

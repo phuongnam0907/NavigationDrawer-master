@@ -18,4 +18,13 @@
 
     <string name="navigation_drawer_open">Open Navigation Drawer</string>
     <string name="navigation_drawer_close">Close Navigation Drawer</string>
+    
+    <string-array name="numbers">
+        <item>Gateway 001 - Node 001</item>
+        <item>Gateway 001 - Node 002</item>
+        <item>Gateway 002 - Node 003</item>
+        <item>Gateway 002 - Node 005</item>
+        <item>Gateway 003 - Node 002</item>
+
+    </string-array>
 </resources>
