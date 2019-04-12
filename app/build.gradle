@@ -26,4 +26,6 @@ dependencies {
     implementation 'com.android.support:design:26.+'
     implementation 'com.turki-alkhateeb:materialcolorpicker:1.0.7'
     implementation 'com.android.volley:volley:1.1.1'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    implementation 'com.github.HotBitmapGG:RingProgressBar:V1.2.3'
 }

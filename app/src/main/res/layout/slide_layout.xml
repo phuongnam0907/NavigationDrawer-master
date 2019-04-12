@@ -6,8 +6,8 @@
 
     <ImageView
         android:id="@+id/slide_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="100dp"
         android:contentDescription="TODO"
@@ -17,9 +17,18 @@
         android:id="@+id/slide_heading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/chart"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:text="TextView"
+        android:textColor="@color/colorWhite" />
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chart"
+        android:layout_width="380dp"
+        android:layout_height="250dp"
         android:layout_below="@+id/slide_image"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="18dp"
-        android:textColor="@color/colorWhite"
-        android:text="TextView" />
+        android:layout_marginTop="20dp">
+    </com.github.mikephil.charting.charts.LineChart>
 </RelativeLayout>

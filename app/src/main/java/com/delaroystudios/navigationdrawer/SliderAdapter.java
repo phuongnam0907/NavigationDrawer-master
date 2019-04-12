@@ -1,22 +1,55 @@
 package com.delaroystudios.navigationdrawer;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SliderAdapter extends PagerAdapter {
 
     Context context;
     LayoutInflater layoutInflater;
 
+    private LineChart lineChart;
+    private LineData lineData;
+    ArrayList<Entry> entryArrayList;
+
     public SliderAdapter(Context context){
         this.context = context;
+        //this.entryArrayList = entryArrayList;
     }
 
     public int[] slide_images = {
@@ -31,12 +64,12 @@ public class SliderAdapter extends PagerAdapter {
 
     public String[] slide_headings = {
             "HOME",
-            "pH",
-            "Temperature",
-            "Liquid",
-            "DO",
-            "TDS",
-            "ORP"
+            "phValue",
+            "tempValue",
+            "liqValue",
+            "doValue",
+            "tdsValue",
+            "orpValue"
     };
 
     @Override
@@ -52,11 +85,43 @@ public class SliderAdapter extends PagerAdapter {
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
+
         layoutInflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.slide_layout, container, false);
 
         ImageView slideImageView = view.findViewById(R.id.slide_image);
         TextView slideHeading = view.findViewById(R.id.slide_heading);
+
+        lineChart = view.findViewById(R.id.chart);
+        lineData = new LineData(getLineDataValues());
+        lineData.setValueTextColor(Color.WHITE);
+        lineData.setValueTextSize(9f);
+        lineChart.getDescription().setEnabled(false);
+        lineChart.setTouchEnabled(true);
+        lineChart.setDragDecelerationFrictionCoef(0.9f);
+        lineChart.setDragEnabled(true);
+        lineChart.setScaleEnabled(true);
+        lineChart.setHighlightPerDragEnabled(true);
+
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setTextSize(10f);
+        xAxis.setTextColor(Color.WHITE);
+        xAxis.setDrawAxisLine(true);
+        xAxis.setDrawGridLines(true);
+        xAxis.setCenterAxisLabels(true);
+
+        YAxis leftAxis = lineChart.getAxisLeft();
+        leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+        leftAxis.setTextColor(ColorTemplate.getHoloBlue());
+        leftAxis.setDrawGridLines(true);
+        leftAxis.setGranularityEnabled(true);
+        leftAxis.setTextColor(Color.WHITE);
+
+        YAxis rightAxis = lineChart.getAxisRight();
+        rightAxis.setEnabled(false);
+
+        lineChart.setData(lineData);
 
         slideImageView.setImageResource(slide_images[position]);
         slideHeading.setText(slide_headings[position]);
@@ -70,4 +135,35 @@ public class SliderAdapter extends PagerAdapter {
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         container.removeView((RelativeLayout)object);
     }
+
+    private List<ILineDataSet> getLineDataValues() {
+
+        ArrayList<ILineDataSet> lineDataSets = null;
+
+        ArrayList<Entry> entryArrayList = new ArrayList<>();
+
+        entryArrayList.add(new Entry(0,2000f));
+//        entryArrayList.add(new Entry(1,3500f));
+//        entryArrayList.add(new Entry(2,5000f));
+//        entryArrayList.add(new Entry(3,8500f));
+
+        LineDataSet lineDataSet = new LineDataSet(entryArrayList,"Sales");
+
+        lineDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+        lineDataSet.setColor(ColorTemplate.getHoloBlue());
+        lineDataSet.setValueTextColor(ColorTemplate.getHoloBlue());
+        lineDataSet.setLineWidth(2f);
+        lineDataSet.setDrawCircles(true);
+        lineDataSet.setDrawValues(true);
+        lineDataSet.setFillColor(ColorTemplate.getHoloBlue());
+        lineDataSet.setHighLightColor(Color.rgb(244, 117, 117));
+        lineDataSet.setDrawCircleHole(false);
+
+        lineDataSets = new ArrayList<>();
+        lineDataSets.add(lineDataSet);
+
+        return lineDataSets;
+    }
+
+
 }
