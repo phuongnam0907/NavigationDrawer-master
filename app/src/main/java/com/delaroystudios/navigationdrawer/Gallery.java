@@ -79,13 +79,6 @@ public class Gallery extends AppCompatActivity implements NavigationView.OnNavig
 
     private int mCurrentPage;
 
-    boolean isRunning = false;
-    Handler mHandler = new Handler();
-
-    String data;
-
-    JSONArray jsonArray1;
-
     String currentGateway;
     String currentNode;
 
@@ -97,63 +90,42 @@ public class Gallery extends AppCompatActivity implements NavigationView.OnNavig
     TextView ipaddr;
 
     RingProgressBar ringProgressBar;
-    ArrayList<Entry> entryArrayList;
-
-    RequestQueue requestQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
         //Data show Chart Activity
-        requestQueue = Volley.newRequestQueue(getApplicationContext());
-
-        data="";
         init();
 
         stringArray = new ArrayList<String>();
         stringGateway = new ArrayList<String>();
         stringNode = new ArrayList<String>();
 
-        jsonArray1 = new JSONArray();
-
         spinner = findViewById(R.id.spinnerL);
         ipaddr = findViewById(R.id.ip_add);
         ringProgressBar = findViewById(R.id.progBar);
         loadSpinnerData(url);
-
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @SuppressLint("WrongConstant")
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String country = spinner.getItemAtPosition(spinner.getSelectedItemPosition()).toString();
-                waiting(country);
-//                Toast.makeText(getApplicationContext(),"Wait ...",Toast.LENGTH_LONG).show();
-//                Toast.makeText(getApplicationContext(),country,Toast.LENGTH_LONG).show();
-                currentGateway = stringGateway.get(spinner.getSelectedItemPosition());
-                currentNode = stringNode.get(spinner.getSelectedItemPosition());
-//                ipaddr.setText(country);
-                ringProgressBar.setVisibility(View.VISIBLE);
-
-                //setJSON(urlS);
-                //Log.d("json", String.valueOf(jsonArray1.length()));
-                //Log.d("data",data);
-
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) { }
-        });
 
         mSlideViewPager = (ViewPager) findViewById(R.id.slideViewPager);
         mDotLayout = (LinearLayout) findViewById(R.id.dotsLayout);
 
         sliderAdapter = new SliderAdapter(Gallery.this);
 
-        mSlideViewPager.setAdapter(sliderAdapter);
-
-        addDotsIndicator(0);
-
-        mSlideViewPager.addOnPageChangeListener(viewListener);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @SuppressLint("WrongConstant")
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String country = spinner.getItemAtPosition(spinner.getSelectedItemPosition()).toString();
+                //setJSON();
+                waiting(country);
+                currentGateway = stringGateway.get(spinner.getSelectedItemPosition());
+                currentNode = stringNode.get(spinner.getSelectedItemPosition());
+                ringProgressBar.setVisibility(View.VISIBLE);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) { }
+        });
     }
 
     void waiting(final String c){
@@ -163,7 +135,7 @@ public class Gallery extends AppCompatActivity implements NavigationView.OnNavig
                 setJSON();
                 for (int i = 0; i < 100; i++){
                     try {
-                        Thread.sleep(15);
+                        Thread.sleep(10);
                         handler.sendEmptyMessage(0);
 
                     } catch (InterruptedException e) {
@@ -184,7 +156,7 @@ public class Gallery extends AppCompatActivity implements NavigationView.OnNavig
                 ipaddr.setText(c);
             }
 
-        }, 1500);
+        }, 1000);
     }
 
     Handler handler = new Handler(){
@@ -199,13 +171,8 @@ public class Gallery extends AppCompatActivity implements NavigationView.OnNavig
         }
     };
 
-    static String convertStreamToString(java.io.InputStream is) {
-        java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
-        return s.hasNext() ? s.next() : "";
-    }
-
     private void loadSpinnerData(String url) {
-//        RequestQueue requestQueue=Volley.newRequestQueue(getApplicationContext());
+        RequestQueue requestQueue=Volley.newRequestQueue(getApplicationContext());
         StringRequest stringRequest=new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -233,20 +200,26 @@ public class Gallery extends AppCompatActivity implements NavigationView.OnNavig
     }
 
     private void setJSON(){
-//        RequestQueue requestQueue=Volley.newRequestQueue(getApplicationContext());
+        RequestQueue requestQueue=Volley.newRequestQueue(getApplicationContext());
         String urlS = "http://192.168.97.1/rpi3/backend/getdata.php?gw=" + currentGateway + "&id=" + currentNode;
         StringRequest stringRequest=new StringRequest(Request.Method.GET, urlS, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try{
                     JSONArray jsonArray = new JSONArray(response);
-                    jsonArray1 = jsonArray;
-//                    Intent intent = new Intent(Gallery.this,SliderAdapter.class);
-//                    intent.putExtra("json",String.valueOf(jsonArray1.length()));
-//                    startActivity(intent);
-//                    Log.d("jsonFi", String.valueOf(jsonArray1.length()));
+                    mSlideViewPager.setAdapter(null);
+                    mSlideViewPager.destroyDrawingCache();
+//                    mSlideViewPager.clearOnPageChangeListeners();
+                    mSlideViewPager.removeOnPageChangeListener(viewListener);
+                    mSlideViewPager.removeAllViews();
+                    sliderAdapter.setDataOnGraph(jsonArray);
+                    sliderAdapter.notifyDataSetChanged();
+
+                    mSlideViewPager.setAdapter(sliderAdapter);
+
+                    addDotsIndicator(0);
+                    mSlideViewPager.addOnPageChangeListener(viewListener);
                 }catch (JSONException e){e.printStackTrace();}
-                Log.d("jsonSe", String.valueOf(jsonArray1.length()));
             }
         }, new Response.ErrorListener() {
             @Override
@@ -370,36 +343,6 @@ public class Gallery extends AppCompatActivity implements NavigationView.OnNavig
             addDotsIndicator(i);
 
             mCurrentPage = i;
-
-            Log.d("Current Page",String.valueOf(i));
-            Log.d("SizePage",String.valueOf(jsonArray1.length()));
-            switch (i) {
-                case 0:
-                    setJSON();
-                    break;
-                case 1:
-                    drawChart("phValue");
-                    break;
-                case 2:
-                    drawChart("tempValue");
-                    break;
-                case 3:
-                    drawChart("liqValue");
-                    break;
-                case 4:
-                    drawChart("doValue");
-                    break;
-                case 5:
-                    drawChart("tdsValue");
-                    break;
-                case 6:
-                    drawChart("orpValue");
-                    break;
-                default:
-                    setJSON();
-                    break;
-            }
-
         }
 
         @Override
@@ -408,60 +351,8 @@ public class Gallery extends AppCompatActivity implements NavigationView.OnNavig
         }
     };
 
-    private Runnable loopR = new Runnable() {
-        public void run() {
-            try {
-                isRunning = true;
-                setJSON();
-                mHandler.postDelayed(loopR, 5000);
-            } catch (Exception e) {
-                e.printStackTrace();
-                isRunning = false;
-            }
-        }
-    };
-
-    @Override
-    protected void onStart() {
-        if (isRunning == false){
-            loopR.run();
-        }
-        super.onStart();
-    }
-
-
-    @Override
-    protected void onStop() {
-        mHandler.removeCallbacks(loopR);
-        mHandler.removeCallbacksAndMessages(null);
-        isRunning = false;
-        super.onStop();
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-    }
-
-    private void drawChart(String valueS) {
-        entryArrayList = new ArrayList<>();
-        try {
-            for (int i = 0; i < jsonArray1.length(); i++) {
-                JSONObject jsonObject1 = jsonArray1.getJSONObject(i);
-
-
-                Float value = Float.valueOf(jsonObject1.getString(valueS));
-                int date = Integer.parseInt(jsonObject1.getString("time"));
-                Log.d(valueS, String.valueOf(value));
-                entryArrayList.add(new Entry(value,date));
-
-//                Log.d(valueS,jsonObject.getString(valueS));
-
-            }
-            Log.d("Size array", String.valueOf(entryArrayList.size()));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

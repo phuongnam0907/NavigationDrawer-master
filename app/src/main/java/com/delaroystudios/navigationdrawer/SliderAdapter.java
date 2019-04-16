@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,29 +48,48 @@ public class SliderAdapter extends PagerAdapter {
     private LineData lineData;
     ArrayList<Entry> entryArrayList;
 
+    TextView slideData;
+
+    String currentState;
+
+    JSONArray jsonArrayA = new JSONArray();
+
+    String currentData;
+
     public SliderAdapter(Context context){
         this.context = context;
-        //this.entryArrayList = entryArrayList;
+    }
+    public void setDataOnGraph(JSONArray jsonArray){
+        Log.d("rep", String.valueOf(jsonArray.length()));
+        this.jsonArrayA = jsonArray;
+        Log.d("repA", String.valueOf(jsonArrayA.length()));
     }
 
     public int[] slide_images = {
-            R.drawable.code_icon,
-            R.drawable.eat_icon,
-            R.drawable.sleep_icon,
-            R.drawable.code_icon,
-            R.drawable.eat_icon,
-            R.drawable.sleep_icon,
-            R.drawable.code_icon
+            R.drawable.ph,
+            R.drawable.temperature,
+            R.drawable.li,
+            R.drawable.dos,
+            R.drawable.tds,
+            R.drawable.orp
     };
 
     public String[] slide_headings = {
-            "HOME",
-            "phValue",
-            "tempValue",
-            "liqValue",
-            "doValue",
-            "tdsValue",
-            "orpValue"
+            "pH Data",
+            "Temperature Data",
+            "Liquid Water Level Data",
+            "Dissolved Oxygen Data",
+            "Total Dissolved Solids Data",
+            "Oxidation Reduction Potential Data"
+    };
+
+    public String[] currency = {
+            "",
+            String.valueOf(Html.fromHtml("&#8451")),
+            "%",
+            "%",
+            " ppm",
+            ""
     };
 
     @Override
@@ -91,9 +111,10 @@ public class SliderAdapter extends PagerAdapter {
 
         ImageView slideImageView = view.findViewById(R.id.slide_image);
         TextView slideHeading = view.findViewById(R.id.slide_heading);
+        slideData = view.findViewById(R.id.slide_data);
 
         lineChart = view.findViewById(R.id.chart);
-        lineData = new LineData(getLineDataValues());
+        lineData = new LineData(getLineDataValues(position));
         lineData.setValueTextColor(Color.WHITE);
         lineData.setValueTextSize(9f);
         lineChart.getDescription().setEnabled(false);
@@ -125,6 +146,8 @@ public class SliderAdapter extends PagerAdapter {
 
         slideImageView.setImageResource(slide_images[position]);
         slideHeading.setText(slide_headings[position]);
+        slideData.setText(currentData + currency[position]);
+        //currentState = slide_headings[position];
 
         container.addView(view);
 
@@ -136,18 +159,49 @@ public class SliderAdapter extends PagerAdapter {
         container.removeView((RelativeLayout)object);
     }
 
-    private List<ILineDataSet> getLineDataValues() {
+    private List<ILineDataSet> getLineDataValues(int position) {
+
+        switch (position){
+            case 0:
+                currentState = "phValue";
+                break;
+            case 1:
+                currentState = "tempValue";
+                break;
+            case 2:
+                currentState = "liqValue";
+                break;
+            case 3:
+                currentState = "doValue";
+                break;
+            case 4:
+                currentState = "tdsValue";
+                break;
+            case 5:
+                currentState = "orpValue";
+                break;
+            default:
+                break;
+        }
 
         ArrayList<ILineDataSet> lineDataSets = null;
 
         ArrayList<Entry> entryArrayList = new ArrayList<>();
 
-        entryArrayList.add(new Entry(0,2000f));
-//        entryArrayList.add(new Entry(1,3500f));
-//        entryArrayList.add(new Entry(2,5000f));
-//        entryArrayList.add(new Entry(3,8500f));
+        try {
+            if (jsonArrayA.length() == 0) entryArrayList.add(new Entry(0,0f));
+            else {
+                for (int i = 0; i < jsonArrayA.length(); i++) {
+                    JSONObject jsonObject = jsonArrayA.getJSONObject(i);
+                    entryArrayList.add(new Entry(Float.valueOf(jsonObject.getString("time")), Float.valueOf(jsonObject.getString(currentState))));
+                    if (i == jsonArrayA.length()-1) currentData = jsonObject.getString(currentState);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-        LineDataSet lineDataSet = new LineDataSet(entryArrayList,"Sales");
+        LineDataSet lineDataSet = new LineDataSet(entryArrayList,currentState);
 
         lineDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
         lineDataSet.setColor(ColorTemplate.getHoloBlue());
