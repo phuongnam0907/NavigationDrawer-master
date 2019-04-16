@@ -33,25 +33,14 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.InputStream;
-import java.lang.reflect.Array;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
 import io.netopen.hotbitmapgg.library.view.RingProgressBar;
 
@@ -209,14 +198,11 @@ public class Gallery extends AppCompatActivity implements NavigationView.OnNavig
                     JSONArray jsonArray = new JSONArray(response);
                     mSlideViewPager.setAdapter(null);
                     mSlideViewPager.destroyDrawingCache();
-//                    mSlideViewPager.clearOnPageChangeListeners();
                     mSlideViewPager.removeOnPageChangeListener(viewListener);
                     mSlideViewPager.removeAllViews();
                     sliderAdapter.setDataOnGraph(jsonArray);
                     sliderAdapter.notifyDataSetChanged();
-
                     mSlideViewPager.setAdapter(sliderAdapter);
-
                     addDotsIndicator(0);
                     mSlideViewPager.addOnPageChangeListener(viewListener);
                 }catch (JSONException e){e.printStackTrace();}
