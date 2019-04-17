@@ -65,7 +65,7 @@ public class FileImport extends AppCompatActivity implements NavigationView.OnNa
                 isRunning = true;
                 jsonParse();
                 Log.d("Times","0");
-                mHandler.postDelayed(loopR, 30000);
+                mHandler.postDelayed(loopR, 60000);
             } catch (Exception e) {
                 e.printStackTrace();
                 isRunning = false;

@@ -124,7 +124,7 @@ public class Gallery extends AppCompatActivity implements NavigationView.OnNavig
                 setJSON();
                 for (int i = 0; i < 100; i++){
                     try {
-                        Thread.sleep(10);
+                        Thread.sleep(20);
                         handler.sendEmptyMessage(0);
 
                     } catch (InterruptedException e) {
@@ -145,7 +145,7 @@ public class Gallery extends AppCompatActivity implements NavigationView.OnNavig
                 ipaddr.setText(c);
             }
 
-        }, 1000);
+        }, 2000);
     }
 
     Handler handler = new Handler(){

@@ -29,6 +29,17 @@
                                           </PersistentState>
                                         </value>
                                       </entry>
+                                      <entry key="clipartAsset">
+                                        <value>
+                                          <PersistentState>
+                                            <option name="values">
+                                              <map>
+                                                <entry key="url" value="jar:file:/snap/android-studio/73/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/device/ic_storage_black_24dp.xml" />
+                                              </map>
+                                            </option>
+                                          </PersistentState>
+                                        </value>
+                                      </entry>
                                       <entry key="image">
                                         <value>
                                           <PersistentState>
@@ -45,9 +56,7 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="assetType" value="IMAGE" />
                                       <entry key="imageAsset" value="$USER_HOME$/Downloads/logobk.png" />
-                                      <entry key="theme" value="HOLO_DARK" />
                                       <entry key="themeColor" value="ffffff" />
                                     </map>
                                   </option>
@@ -65,6 +74,18 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
+                                                <entry key="scalingPercent" value="51" />
+                                              </map>
+                                            </option>
+                                          </PersistentState>
+                                        </value>
+                                      </entry>
+                                      <entry key="foregroundClipartAsset">
+                                        <value>
+                                          <PersistentState>
+                                            <option name="values">
+                                              <map>
+                                                <entry key="url" value="jar:file:/snap/android-studio/73/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/device/ic_storage_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -98,8 +119,12 @@
                                   <option name="values">
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
-                                      <entry key="backgroundColor" value="fbffbf" />
+                                      <entry key="backgroundColor" value="a7eaff" />
+                                      <entry key="backgroundLayerName" value="ic_launcher_background" />
+                                      <entry key="foregroundAssetType" value="CLIP_ART" />
                                       <entry key="foregroundImage" value="$USER_HOME$/Downloads/logobk.png" />
+                                      <entry key="foregroundLayerName" value="ic_launcher_foreground" />
+                                      <entry key="outputName" value="ic_launcher_app" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -121,6 +146,17 @@
                                           </PersistentState>
                                         </value>
                                       </entry>
+                                      <entry key="clipartAsset">
+                                        <value>
+                                          <PersistentState>
+                                            <option name="values">
+                                              <map>
+                                                <entry key="url" value="jar:file:/snap/android-studio/73/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/device/ic_storage_black_24dp.xml" />
+                                              </map>
+                                            </option>
+                                          </PersistentState>
+                                        </value>
+                                      </entry>
                                       <entry key="image">
                                         <value>
                                           <PersistentState>
@@ -136,10 +172,10 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="assetType" value="IMAGE" />
+                                      <entry key="backgroundColor" value="cecece" />
                                       <entry key="cropped" value="true" />
                                       <entry key="imageAsset" value="$USER_HOME$/Downloads/logobk.png" />
-                                      <entry key="outputName" value="logo" />
+                                      <entry key="outputName" value="logo_app" />
                                     </map>
                                   </option>
                                 </PersistentState>
