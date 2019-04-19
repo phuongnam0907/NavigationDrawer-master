@@ -16,7 +16,7 @@
         android:textSize="20sp"
         android:fontFamily="serif"
         android:textColor="#FFFFFF"
-        android:layout_marginTop="100dp"/>
+        android:layout_marginTop="120dp"/>
 
     <Button
         android:id="@+id/btnInfo"
@@ -34,7 +34,7 @@
         android:layout_width="135dp"
         android:layout_height="123dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="110dp"
+        android:layout_marginTop="60dp"
         app:srcCompat="@mipmap/logo" />
 
 </RelativeLayout>
