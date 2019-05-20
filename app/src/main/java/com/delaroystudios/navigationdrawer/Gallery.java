@@ -57,7 +57,7 @@ public class Gallery extends AppCompatActivity implements NavigationView.OnNavig
     int color;
 
     public String TAG = "YOUR CLASS NAME";
-    final static String url = "http://192.168.97.1/rpi3/backend/getgw.php";
+    final static String url = "http://192.168.0.150:8080/rpi3/backend/getgw.php";
 
     private ViewPager mSlideViewPager;
     private LinearLayout mDotLayout;
@@ -190,7 +190,7 @@ public class Gallery extends AppCompatActivity implements NavigationView.OnNavig
 
     private void setJSON(){
         RequestQueue requestQueue=Volley.newRequestQueue(getApplicationContext());
-        String urlS = "http://192.168.97.1/rpi3/backend/getdata.php?gw=" + currentGateway + "&id=" + currentNode;
+        String urlS = "http://192.168.0.150:8080/rpi3/backend/getdata.php?gw=" + currentGateway + "&id=" + currentNode;
         StringRequest stringRequest=new StringRequest(Request.Method.GET, urlS, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -300,7 +300,7 @@ public class Gallery extends AppCompatActivity implements NavigationView.OnNavig
     }
 
     public void addDotsIndicator(int position){
-        mDots = new TextView[7];
+        mDots = new TextView[6];
         mDotLayout.removeAllViews();
 
         for (int i = 0; i < mDots.length; i++){

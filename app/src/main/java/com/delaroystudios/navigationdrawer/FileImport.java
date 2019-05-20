@@ -60,8 +60,8 @@ public class FileImport extends AppCompatActivity implements NavigationView.OnNa
     private ArrayList<String> stringArrayList;
     private ArrayList<TreeNode> treeNodeArrayList;
 
-    final String urlmap = "http://192.168.97.1/rpi3/backend/getmap.php";
-    final String urlgw = "http://192.168.97.1/rpi3/backend/getgwnode.php";
+    final String urlmap = "http://192.168.0.150:8080/rpi3/backend/getmap.php";
+    final String urlgw = "http://192.168.0.150:8080/rpi3/backend/getgwnode.php";
 
 
     @Override
