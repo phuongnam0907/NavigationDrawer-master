@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Material-Color-Picker-master/Material-Color-Picker-master.iml" filepath="$PROJECT_DIR$/Material-Color-Picker-master/Material-Color-Picker-master.iml" />
-      <module fileurl="file://$PROJECT_DIR$/NavigationDrawer.iml" filepath="$PROJECT_DIR$/NavigationDrawer.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/NavigationDrawer-master.iml" filepath="$PROJECT_DIR$/.idea/NavigationDrawer-master.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>

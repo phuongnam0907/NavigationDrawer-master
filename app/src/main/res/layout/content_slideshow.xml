@@ -11,7 +11,7 @@
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Version - 1.0.1\n\nThis app is used for watching data of sensor node.\nUsing LoRa protocol to transferdata."
+        android:text="Version - 1.0.2\n\nThis app is used for watching data of sensor node.\nUsing LoRa protocol to transferdata."
         android:padding="20dp"
         android:textSize="20sp"
         android:fontFamily="serif"

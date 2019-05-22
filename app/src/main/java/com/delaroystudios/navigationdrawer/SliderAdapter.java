@@ -29,6 +29,7 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
@@ -36,7 +37,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class SliderAdapter extends PagerAdapter {
@@ -127,6 +130,15 @@ public class SliderAdapter extends PagerAdapter {
         XAxis xAxis = lineChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTextSize(10f);
+        xAxis.setLabelRotationAngle(300);
+        xAxis.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                Date d = new Date(Float.valueOf(value*1000).longValue());
+                String date = new SimpleDateFormat("HH:mm - dd/MM").format(d);
+                return date;
+            }
+        });
         xAxis.setTextColor(Color.WHITE);
         xAxis.setDrawAxisLine(true);
         xAxis.setDrawGridLines(true);
@@ -135,6 +147,8 @@ public class SliderAdapter extends PagerAdapter {
         YAxis leftAxis = lineChart.getAxisLeft();
         leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
         leftAxis.setTextColor(ColorTemplate.getHoloBlue());
+        leftAxis.setSpaceTop(30);
+        leftAxis.setSpaceBottom(30);
         leftAxis.setDrawGridLines(true);
         leftAxis.setGranularityEnabled(true);
         leftAxis.setTextColor(Color.WHITE);
