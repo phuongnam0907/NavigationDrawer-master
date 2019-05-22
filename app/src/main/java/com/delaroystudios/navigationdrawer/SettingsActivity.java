@@ -60,9 +60,9 @@ public class SettingsActivity extends AppCompatActivity {
                 WifiInfo wifiInfo = wifiManager.getConnectionInfo();
                 String ssid = wifiInfo.getSSID();
                 Log.d("SSID", ssid);
-                if (ssid.equals("\"localhost1234\"")) Toast.makeText(getApplicationContext(),"Connected Station wifi!!!",Toast.LENGTH_SHORT).show();
+                if (ssid.equals("\"localhost2067\"")) Toast.makeText(getApplicationContext(),"Connected Station wifi!!!",Toast.LENGTH_SHORT).show();
                 else {
-                    Toast.makeText(getApplicationContext(),"Pleasess connect to \"localhost1234\" wifi!!!",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"Pleasess connect to \"localhost2067\" wifi!!!",Toast.LENGTH_SHORT).show();
                     connectWifi();
                 }
 
@@ -166,11 +166,11 @@ public class SettingsActivity extends AppCompatActivity {
         for(int i = 0; i < wifiScanList.size(); i++){
             wifis[i] = ((wifiScanList.get(i)).SSID);
 
-            if(wifis[i].equals("localhost1234")) {
+            if(wifis[i].equals("localhost2067")) {
 
                 WifiConfiguration wifiConfig = new WifiConfiguration();
                 wifiConfig.SSID = String.format("\"%s\"", wifis[i]);
-                wifiConfig.preSharedKey = String.format("\"%s\"", "09072007");
+                wifiConfig.preSharedKey = String.format("\"%s\"", "11223344");
 
                 WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                 //remember id

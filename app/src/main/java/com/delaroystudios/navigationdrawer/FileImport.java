@@ -60,8 +60,8 @@ public class FileImport extends AppCompatActivity implements NavigationView.OnNa
     private ArrayList<String> stringArrayList;
     private ArrayList<TreeNode> treeNodeArrayList;
 
-    final String urlmap = "http://192.168.0.150:8080/rpi3/backend/getmap.php";
-    final String urlgw = "http://192.168.0.150:8080/rpi3/backend/getgwnode.php";
+    final String urlmap = "http://192.168.97.1/rpi3/backend/getmap.php";
+    final String urlgw = "http://192.168.97.1/rpi3/backend/getgwnode.php";
 
 
     @Override
@@ -93,18 +93,18 @@ public class FileImport extends AppCompatActivity implements NavigationView.OnNa
 
         // example tree
         rootNode = new TreeNode("  Server  ");
-        rootNode.addChild(new TreeNode("  Node 1  "));
-        final TreeNode child3 = new TreeNode("  Node 2  ");
-        child3.addChild(new TreeNode("  Node 3  "));
-        final TreeNode child6 = new TreeNode("  Node 4  ");
-        child6.addChild(new TreeNode("  Node 5  "));
-        child6.addChild(new TreeNode("  Node 6  "));
-        child3.addChild(child6);
-        rootNode.addChild(child3);
-        final TreeNode child4 = new TreeNode("  Node 7  ");
-        child4.addChild(new TreeNode("  Node 8  "));
-        child4.addChild(new TreeNode("  Node 9  "));
-        rootNode.addChild(child4);
+//        rootNode.addChild(new TreeNode("  Node 1  "));
+//        final TreeNode child3 = new TreeNode("  Node 2  ");
+//        child3.addChild(new TreeNode("  Node 3  "));
+//        final TreeNode child6 = new TreeNode("  Node 4  ");
+//        child6.addChild(new TreeNode("  Node 5  "));
+//        child6.addChild(new TreeNode("  Node 6  "));
+//        child3.addChild(child6);
+//        rootNode.addChild(child3);
+//        final TreeNode child4 = new TreeNode("  Node 7  ");
+//        child4.addChild(new TreeNode("  Node 8  "));
+//        child4.addChild(new TreeNode("  Node 9  "));
+//        rootNode.addChild(child4);
 
         adapter.setRootNode(rootNode);
 
